@@ -31,7 +31,7 @@ Create `generators/<snake_case>.py` using the matching template below.
 
 ```python
 #!/usr/bin/env python3
-import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 """
 <Title> — Study Sheet
 =====================
@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
 ```python
 #!/usr/bin/env python3
-import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 """
 <Title> — Study Sheet
 =====================
@@ -181,7 +181,7 @@ if __name__ == "__main__":
 
 ```python
 #!/usr/bin/env python3
-import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 """
 <Title> — Study Sheet
 =====================

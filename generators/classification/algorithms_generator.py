@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 """
 ML Classification Algorithms — Study Sheet
 ===========================================
 Generates a clean PDF study sheet for ML classification algorithms.
 
 Usage:
-    python classification_algorithms.py
-    python classification_algorithms.py --output my_notes.pdf
+    python algorithms_generator.py
+    python algorithms_generator.py --output my_notes.pdf
 
 Requirements:
     pip install weasyprint matplotlib
@@ -658,7 +658,7 @@ print(X_2d.shape)          # (178, 2)""",
 
 def main():
     parser = argparse.ArgumentParser(description="Generate ML classification study sheet PDF")
-    parser.add_argument("--output", default="pdfs/classification/ml_classification_study_sheet.pdf",
+    parser.add_argument("--output", default="pdfs/classification/algorithms_sheet.pdf",
                         help="Output PDF filename")
     parser.add_argument("--html", action="store_true",
                         help="Also save the intermediate HTML file")
@@ -666,12 +666,12 @@ def main():
 
     render(
         ALGORITHMS,
-        title="ML Classification Algorithms",
-        subtitle="Study sheet — cliff notes, use cases, math, code, visuals",
+        title="Classification Algorithms",
+        subtitle="Some common used Classification Algorithms",
         output_path=args.output,
         save_html=args.html,
         card_builder=build_algorithm_card,
-        show_header=False,
+        show_header=True,
     )
 
 

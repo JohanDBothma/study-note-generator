@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 """
 Classification Preprocessing — Study Sheet
 ===========================================
@@ -205,7 +205,7 @@ def preprocess_data(df, target_column):
 
 def main():
     parser = argparse.ArgumentParser(description="Generate classification preprocessing study sheet PDF")
-    parser.add_argument("--output", default="pdfs/classification/classification_preprocessing.pdf")
+    parser.add_argument("--output", default="pdfs/classification/preprocessing_sheet.pdf")
     parser.add_argument("--html", action="store_true")
     args = parser.parse_args()
 
