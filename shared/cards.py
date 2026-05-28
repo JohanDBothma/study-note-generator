@@ -1,4 +1,37 @@
+from pygments import highlight
+from pygments.lexers import PythonLexer
+from pygments.formatters import HtmlFormatter
+
 from .styles import BADGE_COLORS, escape
+
+_PY_FORMATTER = HtmlFormatter(style="one-dark", noclasses=True, nowrap=True)
+
+
+def _highlight_python(code):
+    """Return syntax-highlighted HTML for a Python code string."""
+    inner = highlight(code, PythonLexer(), _PY_FORMATTER)
+    bg = _PY_FORMATTER.style.background_color
+    return (
+        f'<pre style="background:{bg};padding:8pt 10pt;border-radius:4pt;'
+        f'font-family:var(--mono);font-size:7.5pt;line-height:1.65;'
+        f'white-space:pre;overflow:hidden">{inner}</pre>'
+    )
+
+
+def _md_table(md_text):
+    """Convert a pipe-delimited markdown table string into an HTML table."""
+    lines = [l.strip() for l in md_text.strip().splitlines()]
+    # filter out separator rows (---|---) and blank lines
+    rows = [l for l in lines if l and not set(l.replace("|", "").replace("-", "").replace(" ", "")) == set()]
+    if not rows:
+        return ""
+    header_cells = [c.strip() for c in rows[0].strip("|").split("|")]
+    th = "".join(f"<th>{escape(c)}</th>" for c in header_cells)
+    body_rows = ""
+    for row in rows[1:]:
+        cells = [c.strip() for c in row.strip("|").split("|")]
+        body_rows += "<tr>" + "".join(f"<td>{escape(c)}</td>" for c in cells) + "</tr>"
+    return f'<table class="data-table"><thead><tr>{th}</tr></thead><tbody>{body_rows}</tbody></table>'
 
 
 # ── algorithm card ─────────────────────────────────────────────────────────────
@@ -39,7 +72,7 @@ def build_algorithm_card(algo, chart_b64):
   </div>
   <div class="code-row">
     <div class="section-label">Code</div>
-    <pre>{escape(algo['code'])}</pre>
+    {_highlight_python(algo['code'])}
   </div>
   <div class="viz-row">
     <div class="section-label">Visual — {escape(algo['viz_label'])}</div>
@@ -64,6 +97,33 @@ def _table(data):
         for row in data["rows"]
     )
     return f'<table class="data-table"><thead><tr>{cols}</tr></thead><tbody>{rows}</tbody></table>'
+
+
+def build_code_card(item, _chart_b64=None):
+    """Card layout: title + badge | description | optional dataset table | code block."""
+    bg, tc = BADGE_COLORS.get(item["type"], ("#e5e7eb", "#374151"))
+    dataset_html = ""
+    if item.get("dataset_md"):
+        dataset_html = f"""
+  <div class="cliff-row">
+    <div class="section-label">Sample data</div>
+    {_md_table(item['dataset_md'])}
+  </div>"""
+    return f"""
+<div class="algo">
+  <div class="algo-header">
+    <div class="algo-title">{escape(item['title'])}</div>
+    <span class="badge" style="background:{bg};color:{tc}">{escape(item['type'])}</span>
+  </div>
+  <div class="cliff-row">
+    <div class="section-label">Description</div>
+    <p class="cliff-note">{escape(item['description'])}</p>
+  </div>{dataset_html}
+  <div class="code-row" style="border-bottom:none">
+    <div class="section-label">Code</div>
+    {_highlight_python(item['code'])}
+  </div>
+</div>"""
 
 
 def build_preprocessing_card(item, _chart_b64=None):

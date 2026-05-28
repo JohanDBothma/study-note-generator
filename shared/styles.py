@@ -23,6 +23,7 @@ BADGE_COLORS = {
     "Feature engineering":          ("#ede9fe", "#5b21b6"),
     "Missing data":                 ("#fff1f2", "#9f1239"),
     "Dimensionality reduction":     ("#dcfce7", "#166534"),
+    "Data overview":                ("#f1f5f9", "#334155"),
 }
 
 

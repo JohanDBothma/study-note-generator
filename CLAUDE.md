@@ -10,7 +10,7 @@ shared/
   styles.py   — colour palette, BADGE_COLORS, CSS, escape()
   cards.py    — card builder functions (one per PDF style)
   renderer.py — chart helpers, build_html(), render()
-output/       — generated PDFs land here (gitignored)
+pdfs/       — generated PDFs land here (gitignored)
 ```
 
 ## Adding a new study sheet
@@ -25,7 +25,7 @@ ITEMS = [{ ... }]   # see card schemas below
 
 def main():
     render(ITEMS, "Title", "Subtitle",
-           "output/my_sheet.pdf",
+           "pdfs/my_sheet.pdf",
            card_builder=build_preprocessing_card)
 
 if __name__ == "__main__":
