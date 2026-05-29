@@ -109,6 +109,18 @@ def build_code_card(item, _chart_b64=None):
     <div class="section-label">Sample data</div>
     {_md_table(item['dataset_md'])}
   </div>"""
+    image_html = ""
+    if item.get("image_b64"):
+        caption = escape(item.get("image_caption", ""))
+        caption_html = f'<p class="viz-label">{caption}</p>' if caption else ""
+        image_html = f"""
+  <div class="cliff-row">
+    <div class="section-label">Example</div>
+    <div class="chart-wrap" style="text-align:center">
+      <img src="data:image/png;base64,{item['image_b64']}" style="max-width:{item.get('image_width', '100%')};border-radius:6px;" alt="{caption}">
+      {caption_html}
+    </div>
+  </div>"""
     return f"""
 <div class="algo">
   <div class="algo-header">
@@ -118,7 +130,7 @@ def build_code_card(item, _chart_b64=None):
   <div class="cliff-row">
     <div class="section-label">Description</div>
     <p class="cliff-note">{escape(item['description'])}</p>
-  </div>{dataset_html}
+  </div>{dataset_html}{image_html}
   <div class="code-row" style="border-bottom:none">
     <div class="section-label">Code</div>
     {_highlight_python(item['code'])}
