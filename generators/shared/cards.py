@@ -138,6 +138,93 @@ def build_code_card(item, _chart_b64=None):
 </div>"""
 
 
+def build_reference_card(item, _chart_b64=None):
+    """
+    Card for reference sheets (models, functions, APIs).
+    Layout:
+      header  — title + badge
+      info    — two columns: process + hyperparams (left) | pros / cons / applications (right)
+      code    — full-width syntax-highlighted block
+    """
+    bg, tc = BADGE_COLORS.get(item["type"], ("#e5e7eb", "#374151"))
+
+    # ── left: process + hyperparams ──────────────────────────────────────────
+    left_parts = []
+    if item.get("process"):
+        left_parts.append(
+            f'<p class="cliff-note" style="margin-bottom:5pt">{escape(item["process"])}</p>'
+        )
+    if item.get("hyperparams"):
+        hp_rows = "".join(
+            f'<div style="display:flex;gap:5pt;align-items:baseline;margin-bottom:2pt">'
+            f'<code style="font-family:var(--mono);font-size:6.8pt;background:#f5f4f0;'
+            f'padding:0 3pt;border-radius:2pt;white-space:nowrap;flex-shrink:0">{escape(k)}</code>'
+            f'<span style="font-size:7.5pt;color:var(--muted)">{escape(v)}</span>'
+            f'</div>'
+            for k, v in item["hyperparams"]
+        )
+        left_parts.append(
+            f'<div class="section-label" style="margin-bottom:3pt">Hyperparameters</div>'
+            f'{hp_rows}'
+        )
+    left_html = "".join(left_parts)
+
+    # ── right: pros / cons / applications ────────────────────────────────────
+    right_parts = []
+    if item.get("pros"):
+        right_parts.append(
+            f'<div style="display:flex;gap:5pt;margin-bottom:3pt">'
+            f'<span style="color:#166534;font-size:8pt;flex-shrink:0">✓</span>'
+            f'<span style="font-size:7.5pt;color:var(--text)">{escape(item["pros"])}</span>'
+            f'</div>'
+        )
+    if item.get("cons"):
+        right_parts.append(
+            f'<div style="display:flex;gap:5pt;margin-bottom:3pt">'
+            f'<span style="color:#9f1239;font-size:8pt;flex-shrink:0">✗</span>'
+            f'<span style="font-size:7.5pt;color:var(--text)">{escape(item["cons"])}</span>'
+            f'</div>'
+        )
+    if item.get("applications"):
+        right_parts.append(
+            f'<div style="margin-top:4pt">'
+            f'<span class="section-label">Common uses — </span>'
+            f'<span style="font-size:7.5pt;color:var(--muted);font-style:italic">'
+            f'{escape(item["applications"])}</span>'
+            f'</div>'
+        )
+    right_html = "".join(right_parts)
+
+    has_right = bool(right_html)
+    right_col = f"""
+    <div class="use-col">
+      <div class="section-label" style="margin-bottom:4pt">Pros / Cons</div>
+      {right_html}
+    </div>""" if has_right else ""
+
+    left_width = "width:50%" if has_right else "width:100%;border-right:none"
+
+    info_row = f"""
+  <div class="info-row">
+    <div class="cliff-col" style="{left_width}">
+      <div class="section-label" style="margin-bottom:4pt">Process</div>
+      {left_html}
+    </div>{right_col}
+  </div>""" if (left_html or right_html) else ""
+
+    return f"""
+<div class="algo">
+  <div class="algo-header">
+    <div class="algo-title">{escape(item['title'])}</div>
+    <span class="badge" style="background:{bg};color:{tc}">{escape(item['type'])}</span>
+  </div>{info_row}
+  <div class="code-row" style="border-bottom:none">
+    <div class="section-label">Code</div>
+    {_highlight_python(item['code'])}
+  </div>
+</div>"""
+
+
 def build_preprocessing_card(item, _chart_b64=None):
     bg, tc = BADGE_COLORS.get(item["type"], ("#e5e7eb", "#374151"))
     when_items = "".join(f'<li>{escape(i)}</li>' for i in item["use_when"])
